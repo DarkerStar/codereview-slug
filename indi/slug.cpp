@@ -17,3 +17,12 @@
 *                                                                            *
 *****************************************************************************/
 
+#include <indi/slug.hpp>
+
+namespace indi {
+inline namespace v1 {
+
+
+
+} // inline namespace v1
+} // namespace indi

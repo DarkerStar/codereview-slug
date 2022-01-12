@@ -17,3 +17,15 @@
 *                                                                            *
 *****************************************************************************/
 
+#ifndef INDI_INC_slug
+#define INDI_INC_slug
+
+namespace indi {
+inline namespace v1 {
+
+
+
+} // inline namespace v1
+} // namespace indi
+
+#endif // include guard
