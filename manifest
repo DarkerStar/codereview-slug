@@ -1,10 +1,10 @@
 : 1
-name: codereview-slug
+name: slug
 version: 0.1.0-a.0.z
-summary: codereview-slug C++ bare
+summary: slug C++ bare
 license: GPL-3.0-only ; GNU General Public License v3.0 only.
 description-file: README.md
-url: https://example.org/codereview-slug
+url: https://example.org/slug
 email: indi.in.the.wired@gmail.com
 #build-error-email: indi.in.the.wired@gmail.com
 depends: * build2 >= 0.14.0

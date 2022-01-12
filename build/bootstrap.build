@@ -1,4 +1,4 @@
-project = codereview-slug
+project = slug
 
 using version
 using config
