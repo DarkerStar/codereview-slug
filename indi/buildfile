@@ -1,0 +1,54 @@
+##############################################################################
+#                                                                            #
+# This file is part of project indi::slug.                                   #
+#                                                                            #
+# indi::slug is free software: you can redistribute it and/or modify it      #
+# under the terms of the GNU General Public License as published by the      #
+# Free Software Foundation, either version 3 of the License, or              #
+# (at your option) any later version.                                        #
+#                                                                            #
+# indi::slug is distributed in the hope that it will be useful, but          #
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY #
+# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License    #
+# for more details.                                                          #
+#                                                                            #
+# You should have received a copy of the GNU General Public License          #
+# along with indi::slug. If not, see <https://www.gnu.org/licenses/>.        #
+#                                                                            #
+##############################################################################
+
+# Configuration ##############################################################
+
+libs =
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"
+
+# Exe ########################################################################
+
+./: exe{main}
+
+exe{main}: cxx{main} libue{slug}
+exe{slug}: testscript
+
+# Utility library ############################################################
+
+./: libue{slug}
+
+libue{slug}: {hxx ixx txx cxx}{** -main -**.test...} $libs
+
+# Unit tests #################################################################
+
+testlibs = 
+
+exe{**.test}: test = true
+
+for t: cxx{**.test...}
+{
+	d = $directory($t)
+	n = $name($t)...
+
+	./: $d/exe{$n}
+
+	$d/exe{$n}: $t $d/{hxx ixx txx}{+$n} $testlibs $d/testscript{+$n}
+	$d/exe{$n}: libue{slug}: bin.whole = false
+}
