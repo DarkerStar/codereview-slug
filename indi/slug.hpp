@@ -24,7 +24,11 @@ namespace indi {
 inline namespace v1 {
 
 template <typename T>
-concept slug_policy = true;
+concept slug_policy = requires
+{
+	typename T::char_type;
+	typename T::traits_type;
+};
 
 } // inline namespace v1
 } // namespace indi
