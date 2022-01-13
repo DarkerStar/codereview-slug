@@ -17,16 +17,32 @@
 *                                                                            *
 *****************************************************************************/
 
-#ifndef INDI_INC_slug
-#define INDI_INC_slug
+#define BOOST_TEST_MODULE concept slug_policy
 
-namespace indi {
-inline namespace v1 {
+#ifdef BOOST_TEST_DYN_LINK
+#	include <boost/test/unit_test.hpp>
+#else
+#	include <boost/test/included/unit_test.hpp>
+#endif // BOOST_TEST_DYN_LINK
 
-template <typename T>
-concept slug_policy = true;
+#include <string_view>
 
-} // inline namespace v1
-} // namespace indi
+#include <boost/core/ignore_unused.hpp>
 
-#endif // include guard
+#include <indi/slug.hpp>
+
+BOOST_AUTO_TEST_CASE(simple_policy)
+{
+	struct policy
+	{
+		using char_type = char;
+		using traits_type = std::char_traits<char>;
+
+		static constexpr auto validate(std::string_view) noexcept -> void {}
+	};
+
+	boost::ignore_unused<policy::char_type>();
+	boost::ignore_unused<policy::traits_type>();
+
+	BOOST_TEST(indi::slug_policy<policy>);
+}
