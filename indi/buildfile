@@ -38,7 +38,8 @@ libue{slug}: {hxx ixx txx cxx}{** -main -**.test...} $libs
 
 # Unit tests #################################################################
 
-testlibs = 
+testlibs =
+import testlibs = libboost-test%lib{boost_test}
 
 exe{**.test}: test = true
 

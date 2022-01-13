@@ -28,4 +28,4 @@ email: indi.in.the.wired@gmail.com
 #build-error-email: indi.in.the.wired@gmail.com
 depends: * build2 >= 0.14.0
 depends: * bpkg >= 0.14.0
-#depends: libhello ^1.0.0
+depends: libboost-test

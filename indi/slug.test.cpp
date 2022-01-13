@@ -17,6 +17,17 @@
 *                                                                            *
 *****************************************************************************/
 
+#define BOOST_TEST_MODULE slug
+
+#ifdef BOOST_TEST_DYN_LINK
+#	include <boost/test/unit_test.hpp>
+#else
+#	include <boost/test/included/unit_test.hpp>
+#endif // BOOST_TEST_DYN_LINK
+
 #include <indi/slug.hpp>
 
-auto main() -> int {}
+BOOST_AUTO_TEST_CASE(dummy)
+{
+	// Need at least one test case.
+}
