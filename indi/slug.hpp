@@ -58,8 +58,7 @@ inline namespace v1 {
 
 // concept slug_policy ///////////////////////////////////////////////////////
 //
-// `slug_policy` is a concept that checks that a type is at least a minimal
-// slug policy.
+// Checks that a type is at least a minimal slug policy.
 //
 //////////////////////////////////////////////////////////////////////////////
 
