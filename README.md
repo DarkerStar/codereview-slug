@@ -47,7 +47,7 @@ struct url_slug_policy
     using char_type = char;
     using traits_type = std::char_traits<char>;
 
-    constexpr auto validate(std::string_view s)
+    static constexpr auto validate(std::string_view s)
     {
         if (s.empty())
             throw std::invalid_argument{"url slug cannot be empty"};
