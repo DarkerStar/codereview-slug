@@ -172,3 +172,33 @@ BOOST_AUTO_TEST_CASE(missing_traits_type)
 
 	BOOST_TEST(not indi::slug_policy<policy>);
 }
+
+BOOST_AUTO_TEST_CASE(missing_validate_function)
+{
+	struct policy
+	{
+		using char_type = char;
+		using traits_type = std::char_traits<char>;
+	};
+
+	boost::ignore_unused<policy::char_type>();
+	boost::ignore_unused<policy::traits_type>();
+
+	BOOST_TEST(not indi::slug_policy<policy>);
+}
+
+BOOST_AUTO_TEST_CASE(validate_function_does_not_take_string_view)
+{
+	struct policy
+	{
+		using char_type = char;
+		using traits_type = std::char_traits<char>;
+
+		static constexpr auto validate(std::string const&) noexcept -> void {}
+	};
+
+	boost::ignore_unused<policy::char_type>();
+	boost::ignore_unused<policy::traits_type>();
+
+	BOOST_TEST(not indi::slug_policy<policy>);
+}

@@ -20,6 +20,8 @@
 #ifndef INDI_INC_slug
 #define INDI_INC_slug
 
+#include <string_view>
+
 namespace indi {
 inline namespace v1 {
 
@@ -28,6 +30,8 @@ concept slug_policy = requires
 {
 	typename T::char_type;
 	typename T::traits_type;
+
+	T::validate(std::basic_string_view<typename T::char_type, typename T::traits_type>{});
 };
 
 } // inline namespace v1
