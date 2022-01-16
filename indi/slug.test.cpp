@@ -97,3 +97,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(char_type, Policy, test_types::policies)
 {
 	BOOST_TEST((std::is_same_v<typename indi::basic_slug<Policy>::char_type, typename Policy::char_type>));
 }
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(traits_type, Policy, test_types::policies)
+{
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<Policy>::traits_type, typename Policy::traits_type>));
+}

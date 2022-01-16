@@ -78,6 +78,7 @@ class basic_slug
 {
 public:
 	using char_type = typename Policy::char_type;
+	using traits_type = typename Policy::traits_type;
 };
 
 } // inline namespace v1
