@@ -194,7 +194,7 @@ BOOST_AUTO_TEST_CASE(validate_function_does_not_take_string_view)
 		using char_type = char;
 		using traits_type = std::char_traits<char>;
 
-		static constexpr auto validate(std::string const&) noexcept -> void {}
+		static auto validate(std::string const&) noexcept -> void {}
 	};
 
 	boost::ignore_unused<policy::char_type>();
