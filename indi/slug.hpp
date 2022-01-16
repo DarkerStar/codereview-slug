@@ -20,10 +20,48 @@
 #ifndef INDI_INC_slug
 #define INDI_INC_slug
 
+//////////////////////////////////////////////////////////////////////////////
+//
+// Slugs =====================================================================
+//
+// Slugs - or tokens, or identifiers - are specially formatted strings used
+// for specific technical purposes. Some examples include:
+//
+//  *   URL slugs used to improve SEO for web addresses
+//  *   identifiers in scripts
+//  *   special tokens in data or configuration files
+//
+// Plain strings could be used for any of these, but good programming practice
+// recommends specific unique types for each purpose. Rather than creating
+// different bespoke types each time, `indi::basic_slug` is a policy-based
+// template that mostly eliminates the boilerplate.
+//
+// Slug policies =============================================================
+//
+// Slug policies are both the tags used to strongly differentiate slug types,
+// and the description of what a specific slug is. The slug policy includes a
+// validation function that checks whether the string content of a slug is
+// okay.
+//
+// A minimal slug policy is a type that has two nested types:
+//  *   `char_type`
+//  *   `traits_type`
+// and a static member function with the signature:
+//  *   `validate(std::basic_string_view<char_type, traits_type>)`
+//
+//////////////////////////////////////////////////////////////////////////////
+
 #include <string_view>
 
 namespace indi {
 inline namespace v1 {
+
+// concept slug_policy ///////////////////////////////////////////////////////
+//
+// `slug_policy` is a concept that checks that a type is at least a minimal
+// slug policy.
+//
+//////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
 concept slug_policy = requires
