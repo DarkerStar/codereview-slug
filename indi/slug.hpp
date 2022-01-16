@@ -71,6 +71,15 @@ concept slug_policy = requires
 	T::validate(std::basic_string_view<typename T::char_type, typename T::traits_type>{});
 };
 
+template <
+	typename Policy
+>
+class basic_slug
+{
+public:
+	using char_type = typename Policy::char_type;
+};
+
 } // inline namespace v1
 } // namespace indi
 

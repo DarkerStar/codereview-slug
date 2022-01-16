@@ -25,9 +25,34 @@
 #	include <boost/test/included/unit_test.hpp>
 #endif // BOOST_TEST_DYN_LINK
 
+#include <string_view>
+#include <tuple>
+#include <type_traits>
+
 #include <indi/slug.hpp>
 
-BOOST_AUTO_TEST_CASE(dummy)
+namespace test_types {
+
+template <typename Char, typename Traits>
+struct template_slug_policy
 {
-	// Need at least one test case.
+	using char_type = Char;
+	using traits_type = Traits;
+
+	static constexpr auto validate(std::basic_string_view<char_type, traits_type>) noexcept {}
+};
+
+using policies = std::tuple<
+	template_slug_policy<char, std::char_traits<char>>,
+	template_slug_policy<wchar_t, std::char_traits<wchar_t>>,
+	template_slug_policy<char8_t, std::char_traits<char8_t>>,
+	template_slug_policy<char16_t, std::char_traits<char16_t>>,
+	template_slug_policy<char32_t, std::char_traits<char32_t>>
+>;
+
+} // namespace test_types
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(char_type, Policy, test_types::policies)
+{
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<Policy>::char_type, typename Policy::char_type>));
 }
