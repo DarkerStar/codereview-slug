@@ -150,6 +150,34 @@ using template_args = std::tuple<
 // Types /////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
+BOOST_AUTO_TEST_CASE_TEMPLATE(types, Args, test_types::template_args)
+{
+	using policy_t = std::tuple_element_t<0, Args>;
+	using allocator_t = std::tuple_element_t<1, Args>;
+
+	using char_t = typename policy_t::value_type;
+	using traits_t = typename policy_t::traits_type;
+
+	using string_t = std::basic_string<char_t, traits_t, allocator_t>;
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::allocator_type, allocator_t>));
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::size_type, typename std::allocator_traits<allocator_t>::size_type>));
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::difference_type, typename std::allocator_traits<allocator_t>::difference_type>));
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::reference, char_t&>));
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::const_reference, char_t const&>));
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::pointer, typename std::allocator_traits<allocator_t>::pointer>));
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::const_pointer, typename std::allocator_traits<allocator_t>::const_pointer>));
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::iterator, typename string_t::iterator>));
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::const_iterator, typename string_t::const_iterator>));
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::reverse_iterator, typename string_t::reverse_iterator>));
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::const_reverse_iterator, typename string_t::const_reverse_iterator>));
+}
+
 // value_type ================================================================
 //
 // The `value_type` should come from the policy.
@@ -186,4 +214,16 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(traits_type_WITH_explicit_allocator, Args, test_ty
 	using allocator_t = std::tuple_element_t<1, Args>;
 
 	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::traits_type, typename policy_t::traits_type>));
+}
+
+// allocator_type ============================================================
+//
+// When not specified, the `allocator_type` should default to
+// `std::allocator<Policy::value_type>`.
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(allocator_type, Args, test_types::template_args)
+{
+	using policy_t = std::tuple_element_t<0, Args>;
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t>::allocator_type, std::allocator<typename policy_t::value_type>>));
 }

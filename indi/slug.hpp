@@ -51,6 +51,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
+#include <memory>
 #include <string_view>
 
 namespace indi {
@@ -78,9 +79,24 @@ template <
 class basic_slug
 {
 public:
-	using value_type = typename Policy::value_type;
-	using traits_type = typename Policy::traits_type;
+	using value_type     = typename Policy::value_type;
+	using traits_type    = typename Policy::traits_type;
 	using allocator_type = Allocator;
+
+	using size_type       = typename std::allocator_traits<Allocator>::size_type;
+	using difference_type = typename std::allocator_traits<Allocator>::difference_type;
+
+	using reference       = value_type&;
+	using const_reference = value_type const&;
+
+	using pointer       = typename std::allocator_traits<Allocator>::pointer;
+	using const_pointer = typename std::allocator_traits<Allocator>::const_pointer;
+
+	using iterator       = typename std::basic_string<value_type, traits_type, Allocator>::iterator;
+	using const_iterator = typename std::basic_string<value_type, traits_type, Allocator>::const_iterator;
+
+	using reverse_iterator       = typename std::basic_string<value_type, traits_type, Allocator>::reverse_iterator;
+	using const_reverse_iterator = typename std::basic_string<value_type, traits_type, Allocator>::const_reverse_iterator;
 };
 
 } // inline namespace v1
