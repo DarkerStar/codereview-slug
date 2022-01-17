@@ -72,13 +72,15 @@ concept slug_policy = requires
 };
 
 template <
-	typename Policy
+	typename Policy,
+	typename Allocator = std::allocator<typename Policy::value_type>
 >
 class basic_slug
 {
 public:
 	using value_type = typename Policy::value_type;
 	using traits_type = typename Policy::traits_type;
+	using allocator_type = Allocator;
 };
 
 } // inline namespace v1

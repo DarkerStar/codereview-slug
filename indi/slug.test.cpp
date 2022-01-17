@@ -25,9 +25,20 @@
 #	include <boost/test/included/unit_test.hpp>
 #endif // BOOST_TEST_DYN_LINK
 
+#include <version>
+
+#ifdef _LIBCPP_VERSION
+// libc++ doesn't support polymorphic allocators
+#	define INDI_COMPAT_no_polymorphic_allocator_support
+#endif // _LIBCPP_VERSION
+
 #include <string_view>
 #include <tuple>
 #include <type_traits>
+
+#ifndef INDI_COMPAT_no_polymorphic_allocator_support
+#	include <memory_resource>
+#endif // INDI_COMPAT_no_polymorphic_allocator_support
 
 #include <indi/slug.hpp>
 
@@ -91,14 +102,104 @@ using policies = std::tuple<
 	template_slug_policy<char32_t, test_char_traits<char32_t>>
 >;
 
+template <
+	typename Char,
+	template <typename> typename Traits,
+	template <typename> typename Allocator>
+using template_args_t = std::tuple<
+	template_slug_policy<Char, Traits<Char>>,
+	Allocator<Char>
+>;
+
+using template_args = std::tuple<
+	template_args_t<char,     std::char_traits, std::allocator>,
+	template_args_t<wchar_t,  std::char_traits, std::allocator>,
+	template_args_t<char8_t,  std::char_traits, std::allocator>,
+	template_args_t<char16_t, std::char_traits, std::allocator>,
+	template_args_t<char32_t, std::char_traits, std::allocator>,
+	template_args_t<char,     test_char_traits, std::allocator>,
+	template_args_t<wchar_t,  test_char_traits, std::allocator>,
+	template_args_t<char8_t,  test_char_traits, std::allocator>,
+	template_args_t<char16_t, test_char_traits, std::allocator>,
+	template_args_t<char32_t, test_char_traits, std::allocator>
+#ifndef INDI_COMPAT_no_polymorphic_allocator_support
+		,
+		template_args_t<char,     std::char_traits, std::pmr::polymorphic_allocator>,
+		template_args_t<wchar_t,  std::char_traits, std::pmr::polymorphic_allocator>,
+		template_args_t<char8_t,  std::char_traits, std::pmr::polymorphic_allocator>,
+		template_args_t<char16_t, std::char_traits, std::pmr::polymorphic_allocator>,
+		template_args_t<char32_t, std::char_traits, std::pmr::polymorphic_allocator>,
+		template_args_t<char,     test_char_traits, std::pmr::polymorphic_allocator>,
+		template_args_t<wchar_t,  test_char_traits, std::pmr::polymorphic_allocator>,
+		template_args_t<char8_t,  test_char_traits, std::pmr::polymorphic_allocator>,
+		template_args_t<char16_t, test_char_traits, std::pmr::polymorphic_allocator>,
+		template_args_t<char32_t, test_char_traits, std::pmr::polymorphic_allocator>
+#endif // INDI_COMPAT_no_polymorphic_allocator_support
+>;
+
 } // namespace test_types
+
+//////////////////////////////////////////////////////////////////////////////
+// Types /////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+// value_type ================================================================
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(value_type, Policy, test_types::policies)
 {
 	BOOST_TEST((std::is_same_v<typename indi::basic_slug<Policy>::value_type, typename Policy::value_type>));
 }
 
+BOOST_AUTO_TEST_CASE_TEMPLATE(value_type2, Args, test_types::template_args)
+{
+	using policy_t = std::tuple_element_t<0, Args>;
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t>::value_type, typename policy_t::value_type>));
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(value_type_WITH_explicit_allocator, Args, test_types::template_args)
+{
+	using policy_t = std::tuple_element_t<0, Args>;
+	using allocator_t = std::tuple_element_t<1, Args>;
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::value_type, typename policy_t::value_type>));
+}
+
+// traits_type ===============================================================
+
 BOOST_AUTO_TEST_CASE_TEMPLATE(traits_type, Policy, test_types::policies)
 {
 	BOOST_TEST((std::is_same_v<typename indi::basic_slug<Policy>::traits_type, typename Policy::traits_type>));
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(traits_type2, Args, test_types::template_args)
+{
+	using policy_t = std::tuple_element_t<0, Args>;
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t>::traits_type, typename policy_t::traits_type>));
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(traits_type_WITH_explicit_allocator, Args, test_types::template_args)
+{
+	using policy_t = std::tuple_element_t<0, Args>;
+	using allocator_t = std::tuple_element_t<1, Args>;
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::traits_type, typename policy_t::traits_type>));
+}
+
+// allocator_type ============================================================
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(allocator_type, Args, test_types::template_args)
+{
+	using policy_t = std::tuple_element_t<0, Args>;
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t>::allocator_type, std::allocator<typename policy_t::value_type>>));
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(allocator_type_WITH_explicit_allocator, Args, test_types::template_args)
+{
+	using policy_t = std::tuple_element_t<0, Args>;
+	using allocator_t = std::tuple_element_t<1, Args>;
+
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::allocator_type, allocator_t>));
 }
