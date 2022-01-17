@@ -44,10 +44,10 @@
 // okay.
 //
 // A minimal slug policy is a type that has two nested types:
-//  *   `char_type`
+//  *   `value_type`
 //  *   `traits_type`
 // and a static member function with the signature:
-//  *   `validate(std::basic_string_view<char_type, traits_type>)`
+//  *   `validate(std::basic_string_view<value_type, traits_type>)`
 //
 //////////////////////////////////////////////////////////////////////////////
 
@@ -65,10 +65,10 @@ inline namespace v1 {
 template <typename T>
 concept slug_policy = requires
 {
-	typename T::char_type;
+	typename T::value_type;
 	typename T::traits_type;
 
-	T::validate(std::basic_string_view<typename T::char_type, typename T::traits_type>{});
+	T::validate(std::basic_string_view<typename T::value_type, typename T::traits_type>{});
 };
 
 template <
@@ -77,7 +77,7 @@ template <
 class basic_slug
 {
 public:
-	using char_type = typename Policy::char_type;
+	using value_type = typename Policy::value_type;
 	using traits_type = typename Policy::traits_type;
 };
 

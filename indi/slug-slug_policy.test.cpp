@@ -35,13 +35,13 @@ BOOST_AUTO_TEST_CASE(simple_policy)
 {
 	struct policy
 	{
-		using char_type = char;
+		using value_type = char;
 		using traits_type = std::char_traits<char>;
 
 		static constexpr auto validate(std::string_view) noexcept -> void {}
 	};
 
-	boost::ignore_unused<policy::char_type>();
+	boost::ignore_unused<policy::value_type>();
 	boost::ignore_unused<policy::traits_type>();
 
 	BOOST_TEST(indi::slug_policy<policy>);
@@ -130,10 +130,10 @@ struct test_char_traits
 template <typename Char>
 struct test_template_policy
 {
-	using char_type = Char;
+	using value_type = Char;
 	using traits_type = test_char_traits<Char>;
 
-	static constexpr auto validate(std::basic_string_view<char_type, traits_type>) noexcept -> void {}
+	static constexpr auto validate(std::basic_string_view<value_type, traits_type>) noexcept -> void {}
 };
 
 BOOST_AUTO_TEST_CASE(template_policy)
@@ -145,7 +145,7 @@ BOOST_AUTO_TEST_CASE(template_policy)
 	BOOST_TEST(indi::slug_policy<test_template_policy<char32_t>>);
 }
 
-BOOST_AUTO_TEST_CASE(missing_char_type)
+BOOST_AUTO_TEST_CASE(missing_value_type)
 {
 	struct policy
 	{
@@ -163,12 +163,12 @@ BOOST_AUTO_TEST_CASE(missing_traits_type)
 {
 	struct policy
 	{
-		using char_type = char;
+		using value_type = char;
 
 		static constexpr auto validate(std::string_view) noexcept -> void {}
 	};
 
-	boost::ignore_unused<policy::char_type>();
+	boost::ignore_unused<policy::value_type>();
 
 	BOOST_TEST(not indi::slug_policy<policy>);
 }
@@ -177,11 +177,11 @@ BOOST_AUTO_TEST_CASE(missing_validate_function)
 {
 	struct policy
 	{
-		using char_type = char;
+		using value_type = char;
 		using traits_type = std::char_traits<char>;
 	};
 
-	boost::ignore_unused<policy::char_type>();
+	boost::ignore_unused<policy::value_type>();
 	boost::ignore_unused<policy::traits_type>();
 
 	BOOST_TEST(not indi::slug_policy<policy>);
@@ -191,13 +191,13 @@ BOOST_AUTO_TEST_CASE(validate_function_does_not_take_string_view)
 {
 	struct policy
 	{
-		using char_type = char;
+		using value_type = char;
 		using traits_type = std::char_traits<char>;
 
 		static auto validate(std::string const&) noexcept -> void {}
 	};
 
-	boost::ignore_unused<policy::char_type>();
+	boost::ignore_unused<policy::value_type>();
 	boost::ignore_unused<policy::traits_type>();
 
 	BOOST_TEST(not indi::slug_policy<policy>);
