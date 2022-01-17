@@ -72,10 +72,10 @@ struct test_char_traits
 template <typename Char, typename Traits>
 struct template_slug_policy
 {
-	using char_type = Char;
+	using value_type = Char;
 	using traits_type = Traits;
 
-	static constexpr auto validate(std::basic_string_view<char_type, traits_type>) noexcept {}
+	static constexpr auto validate(std::basic_string_view<value_type, traits_type>) noexcept {}
 };
 
 using policies = std::tuple<
@@ -93,9 +93,9 @@ using policies = std::tuple<
 
 } // namespace test_types
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(char_type, Policy, test_types::policies)
+BOOST_AUTO_TEST_CASE_TEMPLATE(value_type, Policy, test_types::policies)
 {
-	BOOST_TEST((std::is_same_v<typename indi::basic_slug<Policy>::char_type, typename Policy::char_type>));
+	BOOST_TEST((std::is_same_v<typename indi::basic_slug<Policy>::value_type, typename Policy::value_type>));
 }
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(traits_type, Policy, test_types::policies)
