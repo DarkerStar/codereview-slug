@@ -44,10 +44,10 @@
 // okay.
 //
 // A minimal slug policy is a type that has two nested types:
-//  *   `char_type`
+//  *   `value_type`
 //  *   `traits_type`
 // and a static member function with the signature:
-//  *   `validate(std::basic_string_view<char_type, traits_type>)`
+//  *   `validate(std::basic_string_view<value_type, traits_type>)`
 //
 //////////////////////////////////////////////////////////////////////////////
 
