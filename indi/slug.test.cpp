@@ -44,6 +44,13 @@
 
 namespace test_types {
 
+// template class test_char_traits<Char> =====================================
+//
+// A template that is completely identical to std::char_traits in every way,
+// but completely unrelated and distinct.
+//
+// ===========================================================================
+
 template <typename Char>
 struct test_char_traits
 {
@@ -80,8 +87,14 @@ struct test_char_traits
 	static constexpr auto not_eof(int_type e) noexcept { return stdtraits_t::not_eof(e); }
 };
 
+// template class test_slug_policy<Char, Traits> =============================
+//
+// A minimal slug policy that accepts all strings as slugs.
+//
+// ===========================================================================
+
 template <typename Char, typename Traits>
-struct template_slug_policy
+struct test_slug_policy
 {
 	using value_type = Char;
 	using traits_type = Traits;
@@ -89,25 +102,19 @@ struct template_slug_policy
 	static constexpr auto validate(std::basic_string_view<value_type, traits_type>) noexcept {}
 };
 
-using policies = std::tuple<
-	template_slug_policy<char,     std::char_traits<char>>,
-	template_slug_policy<wchar_t,  std::char_traits<wchar_t>>,
-	template_slug_policy<char8_t,  std::char_traits<char8_t>>,
-	template_slug_policy<char16_t, std::char_traits<char16_t>>,
-	template_slug_policy<char32_t, std::char_traits<char32_t>>,
-	template_slug_policy<char,     test_char_traits<char>>,
-	template_slug_policy<wchar_t,  test_char_traits<wchar_t>>,
-	template_slug_policy<char8_t,  test_char_traits<char8_t>>,
-	template_slug_policy<char16_t, test_char_traits<char16_t>>,
-	template_slug_policy<char32_t, test_char_traits<char32_t>>
->;
+// type list template_args ===================================================
+//
+// A list of sets of valid template arguments for
+// `indi::basic_slug<Policy, Allocator>`.
+//
+// ===========================================================================
 
 template <
 	typename Char,
 	template <typename> typename Traits,
 	template <typename> typename Allocator>
 using template_args_t = std::tuple<
-	template_slug_policy<Char, Traits<Char>>,
+	test_slug_policy<Char, Traits<Char>>,
 	Allocator<Char>
 >;
 
@@ -144,13 +151,10 @@ using template_args = std::tuple<
 //////////////////////////////////////////////////////////////////////////////
 
 // value_type ================================================================
+//
+// The `value_type` should come from the policy.
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(value_type, Policy, test_types::policies)
-{
-	BOOST_TEST((std::is_same_v<typename indi::basic_slug<Policy>::value_type, typename Policy::value_type>));
-}
-
-BOOST_AUTO_TEST_CASE_TEMPLATE(value_type2, Args, test_types::template_args)
+BOOST_AUTO_TEST_CASE_TEMPLATE(value_type, Args, test_types::template_args)
 {
 	using policy_t = std::tuple_element_t<0, Args>;
 
@@ -166,13 +170,10 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(value_type_WITH_explicit_allocator, Args, test_typ
 }
 
 // traits_type ===============================================================
+//
+// The `traits_type` should come from the policy.
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(traits_type, Policy, test_types::policies)
-{
-	BOOST_TEST((std::is_same_v<typename indi::basic_slug<Policy>::traits_type, typename Policy::traits_type>));
-}
-
-BOOST_AUTO_TEST_CASE_TEMPLATE(traits_type2, Args, test_types::template_args)
+BOOST_AUTO_TEST_CASE_TEMPLATE(traits_type, Args, test_types::template_args)
 {
 	using policy_t = std::tuple_element_t<0, Args>;
 
@@ -185,21 +186,4 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(traits_type_WITH_explicit_allocator, Args, test_ty
 	using allocator_t = std::tuple_element_t<1, Args>;
 
 	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::traits_type, typename policy_t::traits_type>));
-}
-
-// allocator_type ============================================================
-
-BOOST_AUTO_TEST_CASE_TEMPLATE(allocator_type, Args, test_types::template_args)
-{
-	using policy_t = std::tuple_element_t<0, Args>;
-
-	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t>::allocator_type, std::allocator<typename policy_t::value_type>>));
-}
-
-BOOST_AUTO_TEST_CASE_TEMPLATE(allocator_type_WITH_explicit_allocator, Args, test_types::template_args)
-{
-	using policy_t = std::tuple_element_t<0, Args>;
-	using allocator_t = std::tuple_element_t<1, Args>;
-
-	BOOST_TEST((std::is_same_v<typename indi::basic_slug<policy_t, allocator_t>::allocator_type, allocator_t>));
 }
