@@ -65,10 +65,10 @@ inline namespace v1 {
 template <typename T>
 concept slug_policy = requires
 {
-	typename T::char_type;
+	typename T::value_type;
 	typename T::traits_type;
 
-	T::validate(std::basic_string_view<typename T::char_type, typename T::traits_type>{});
+	T::validate(std::basic_string_view<typename T::value_type, typename T::traits_type>{});
 };
 
 template <
